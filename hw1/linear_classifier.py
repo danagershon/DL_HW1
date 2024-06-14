@@ -2,7 +2,7 @@ import torch
 from torch import Tensor
 from collections import namedtuple
 from torch.utils.data import DataLoader
-
+import numpy as np #remove
 from .losses import ClassifierLoss
 
 
@@ -20,10 +20,8 @@ class LinearClassifier(object):
         # TODO:
         #  Create weights tensor of appropriate dimensions
         #  Initialize it from a normal dist with zero mean and the given std.
-
-        self.weights = None
-        # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        #weights.shape = [features, classes]
+        self.weights = torch.normal(0, weight_std, size=[n_features, n_classes])
         # ========================
 
     def predict(self, x: Tensor):
@@ -45,9 +43,9 @@ class LinearClassifier(object):
 
         y_pred, class_scores = None, None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        class_scores = torch.mm(x,self.weights)
+        y_pred = np.argmax(class_scores, axis=1)
         # ========================
-
         return y_pred, class_scores
 
     @staticmethod
@@ -66,7 +64,8 @@ class LinearClassifier(object):
 
         acc = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        correct = np.where(y == y_pred)[0]
+        acc = len(correct) / len(y)
         # ========================
 
         return acc * 100
