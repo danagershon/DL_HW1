@@ -62,7 +62,8 @@ class SVMHingeLoss(ClassifierLoss):
 
         # TODO: Save what you need for gradient calculation in self.grad_ctx
         # ====== YOUR CODE: ======
-        #raise NotImplementedError()
+        self.grad_ctx["m"] = M
+        self.grad_ctx["y"] = y #ground truth
         # ========================
         print(loss)
         return loss
@@ -80,6 +81,16 @@ class SVMHingeLoss(ClassifierLoss):
 
         grad = None
         # ====== YOUR CODE: ======
+        G =  (self.grad_ctx["m"] > 0).int() #j != y_i
+        G_row_penalty = -1 * torch.sum(G, dim=1).reshape([self.grad_ctx["m"].shape[0], 1]) #sum over columns as penalty
+        print(G_row_penalty.shape)
+        G_truth_mask = torch.zeros(G.shape) #G[i,j] = 1 iff y[i] = j
+        G_truth_mask[:, self.grad_ctx["y"]] = 1;
+        print(G_truth_mask)
+        
+        G_truth_penalty = torch.mul(G_row_penalty, G_truth_mask)
+        G += G_truth_penalty #fix G where j==y_i, by removing the extra 1 there and turning it to -1's (sum over all row)
+        print(G)
         raise NotImplementedError()
         # ========================
 
