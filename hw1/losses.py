@@ -1,6 +1,6 @@
 import abc
 import torch
-
+import numpy as np
 
 class ClassifierLoss(abc.ABC):
     """
@@ -52,14 +52,19 @@ class SVMHingeLoss(ClassifierLoss):
 
         loss = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        truth_scores_column = x_scores[:, y].diag().reshape([x_scores.shape[0],1]) #[N, 1], a bit of a waste of space but its vectorized - diagonal has [i, y[i]]
+        M = self.delta + x_scores - truth_scores_column.repeat(1, x_scores.shape[-1]) #[N, C]
+
+        loss = torch.sum(torch.maximum(M, torch.zeros(M.shape)), dim=1) - self.delta #sum on columns. Don't forget to remove delta for the column where j==y_i
+        loss = torch.mean(loss)
+        
         # ========================
 
         # TODO: Save what you need for gradient calculation in self.grad_ctx
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        #raise NotImplementedError()
         # ========================
-
+        print(loss)
         return loss
 
     def grad(self):
