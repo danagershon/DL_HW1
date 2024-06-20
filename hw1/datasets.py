@@ -33,7 +33,7 @@ def torch_temporary_seed(seed: int):
     # TODO:
     #  Implement this context manager as described.
     #  See torch.random.get/set_rng_state(), torch.random.manual_seed().
-    original_state = torch.get_rng_state()
+    original_state = torch.random.get_rng_state()
     try:
         torch.random.manual_seed(seed)
         yield
