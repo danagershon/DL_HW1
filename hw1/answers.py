@@ -94,39 +94,54 @@ An equation: $e^{i\pi} -1 = 0$
 part3_q1 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+The ideal pattern to see in a residual plot is randomly scattered residuals centered around the zero line,
+with approximately constant variance across the predicted values.
+There should be no clear pattern of increase or decrease in variance.
+Based on the residual plot I got after CV, I can say that the fitness of the trained model is relatively high compared to
+the top-5 features model. We can see that the final plot after CV has a better residual
+pattern than the top-5 feature's plot - the residuals are closer and more centered around the zero line (as is also 
+indicated by the lower MSE error), having similar variance across the predicted values.
+Also, there are significantly fewer outliers.
 
 """
 
 part3_q2 = r"""
 **Your answer:**
 
+1. It is still a linear regression model because it is still a linear combination of the features - the model
+is still a linear function (where $W$ stores the coefficients). Only the non-linear features were produced 
+by applying a non-linear function to the original features.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. Technically we can apply any non-linear on the original features, but it will benefit the model if it
+captures the underlying non-linear relationships. We have to keep in mind that adding features increases the dimension
+which can lead to overfitting, and some non-linear functions can have a high computational cost.
 
+3. The decision boundary is still a hyperplane in the **transformed** feature space since the model is
+a linear combination of the transformed features. However, the decision boundary becomes non-linear
+in the **original** feature space. For example, if we originally had two features $x_1,x_2$ and transformed them
+to $x_1^2, x_2$, then the decision boundary is still a hyperplane in the transformed feature space: $x_1^2, x_2$
+but in the original feature space $x_1, x_2$ the decision boundary is a parabola.
 """
 
 part3_q3 = r"""
 **Your answer:**
 
+1. Using log space allows us to sample $\lambda$ values from a larger range, where the sampling is proportionate to
+the scale (ensuring that small and large values are sampled according to their relative scale).
+Using linear space is not efficient for sampling values from a large range, as the values are linearly spaced.
+It will sample many values that will be too close to each other, making some of the samples redundant. If
+we reduce the number of samples by decreasing the range or by increasing the spacing, we can miss important 
+$\lambda$ values.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. The model was fitted to the data 180 times.
+Calculation:
+- The degrees range has 3 values ([1,2,3]).
+- The $\lambda$ range has 20 values.
+- The total number of degree + $\lambda$ combinations is: $3 * 20 = 60$. This is the number of times cross validation is 
+performed (since at each CV we check one combination).
+- At each CV, since the number of folds is 3, we fit the model 3 times (on each combination of 2 folds 
+while the third fold is the validation set)
+- Thus overall the number of times the model was fit on the data is: $(3 * 20) * 3 = 180$
 
 """
 
