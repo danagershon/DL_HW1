@@ -49,40 +49,31 @@ model when it is finally evaluated on the test set.
 
 part2_q1 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+In the case of ${\Delta} < 0$, the loss will simply be whether the results undershot the margin, and the gradient will still point towards higher difference from the prediction to the label. Thus when running SGD even when ${\Delta} < 0$, the model will still lower the loss.
 
 """
 
 part2_q2 = r"""
 **Your answer:**
+The weights matrix suggest that the model is learning to classify horizonal lines in different parts of the image, and when it finds lines that are indicative of a certain digit, it will strongly push towards that digit.
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+This is could explain why it sometimes mistakes 5 vs 2 (since there are similar horizontally but flipped), and 4 vs 9.
 
 """
 
 part2_q3 = r"""
 **Your answer:**
 
+The learning rate chosen looks good and not too big or too small.
+If it were too small, the loss would barely go down and would possibly converge to a local minimum and stay there after many epochs, rather than slowly approaching 0.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+If it were too big, the loss would jump up and down with large "spikes" of learning and unlearning because it jumps from optimum points too quickly and doesn't learn in the long term.
+
+This graph appears to converge steadily towards zero after honing into a local minimum early, and this is why the learning rate appears Good.
+
+1.Slightly underfitted to the training set
+
+Because we see that after the initial spike of learning, the performance on the training set is stagnating while the performance on the validation set is increasing. This means overall good generalization but underfitting the details of the training set and thus not able to improve further.
 
 """
 

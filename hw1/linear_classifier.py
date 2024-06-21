@@ -139,7 +139,10 @@ class LinearClassifier(object):
         #  The output shape should be (n_classes, C, H, W).
 
         # ====== YOUR CODE: ======
-        w_images = self.weights.reshape(img_shape)
+        if(has_bias):
+            w_images = self.weights[1:, :].reshape((self.weights.shape[1], *img_shape)) #Ignore row 0 == bias
+        else:
+            w_images = self.weights.reshape((self.weights.shape[1], *img_shape))
         # ========================
 
         return w_images
@@ -152,7 +155,7 @@ def hyperparams():
     #  Manually tune the hyperparameters to get the training accuracy test
     #  to pass.
     # ====== YOUR CODE: ======
-    hp = dict(weight_std=0.2, learn_rate=0.25, weight_decay=0.005)
+    hp = dict(weight_std=0.03, learn_rate=0.15, weight_decay=0.009)
     #raise NotImplementedError()
     # ========================
 
