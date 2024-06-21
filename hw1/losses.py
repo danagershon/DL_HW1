@@ -67,7 +67,7 @@ class SVMHingeLoss(ClassifierLoss):
         self.grad_ctx["X"] = x
         self.grad_ctx["C"] = x_scores.shape[1]
         # ========================
-        print(loss)
+        #print(loss)
         return loss
 
     def grad(self):

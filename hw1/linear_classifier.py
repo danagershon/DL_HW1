@@ -101,10 +101,27 @@ class LinearClassifier(object):
             #     using the weight_decay parameter.
 
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+
+            #eval:
+            for i in range(len(["train", "valid"])):
+                batch, label = next(iter((dl_train, dl_valid)[i]))
+                y_pred, class_scores = self.predict(batch)
+                loss = loss_fn(batch, label, class_scores, y_pred)
+                acc = self.evaluate_accuracy(label, y_pred)
+                (train_res, valid_res)[i].accuracy.append(acc)
+                (train_res, valid_res)[i].loss.append(loss)
+
+            #train:
+
+            #regularization loss
+            self.weights -= learn_rate * weight_decay * self.weights
+            
+            #normal loss
+            self.weights -= learn_rate * loss_fn.grad()
+            
             # ========================
             print(".", end="")
-
+        #average_loss = torch.average(train_res.loss)
         print("")
         return train_res, valid_res
 
@@ -122,7 +139,7 @@ class LinearClassifier(object):
         #  The output shape should be (n_classes, C, H, W).
 
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        w_images = self.weights.reshape(img_shape)
         # ========================
 
         return w_images
@@ -135,7 +152,8 @@ def hyperparams():
     #  Manually tune the hyperparameters to get the training accuracy test
     #  to pass.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    hp = dict(weight_std=0.2, learn_rate=0.25, weight_decay=0.005)
+    #raise NotImplementedError()
     # ========================
 
     return hp
