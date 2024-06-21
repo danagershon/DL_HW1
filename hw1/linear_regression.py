@@ -78,7 +78,7 @@ def fit_predict_dataframe(
     
     X = df.drop(target_name, axis=1) if feature_names is None else df[feature_names]
     y = df[target_name]
-    y_pred = model.fit_predict(X.values, y.values)
+    y_pred = model.fit_predict(X.values, y)
 
     return y_pred
 
@@ -233,10 +233,11 @@ def cv_best_hyperparams(
     params = {'bostonfeaturestransformer__degree': degree_range,
               'linearregressor__reg_lambda': lambda_range}
     scorer = sklearn.metrics.make_scorer(mse_score, greater_is_better=False)
-    kfold = sklearn.model_selection.KFold(k_folds, shuffle=True, random_state=100)
+    # kfold = sklearn.model_selection.KFold(k_folds, shuffle=True, random_state=100)
     # cv can be k_folds and then test nse is 19.04
+    # on second run got test mse 13.92 with and without rand state 100
     # TODO: check how low test mse should be
-    grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=params, cv=kfold, scoring=scorer)
+    grid_search = sklearn.model_selection.GridSearchCV(estimator=model, param_grid=params, cv=k_folds, scoring=scorer)
     grid_search.fit(X, y)
     best_params = grid_search.best_params_
 
