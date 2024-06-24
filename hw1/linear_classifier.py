@@ -85,6 +85,7 @@ class LinearClassifier(object):
         valid_res = Result(accuracy=[], loss=[])
 
         print("Training", end="")
+        
         for epoch_idx in range(max_epochs):
             total_correct = 0
             average_loss = 0
@@ -102,26 +103,39 @@ class LinearClassifier(object):
 
             # ====== YOUR CODE: ======
 
-            #eval:
-            for i in range(len(["train", "valid"])):
-                batch, label = next(iter((dl_train, dl_valid)[i]))
+            #eval on train:
+            for (batch, label) in iter(dl_train):
+                    y_pred, class_scores = self.predict(batch)
+                    loss = loss_fn(batch, label, class_scores, y_pred)
+                    acc = self.evaluate_accuracy(label, y_pred)
+                    train_res.accuracy.append(acc)
+                    train_res.loss.append(loss / len(batch))
+                    average_loss += loss
+                    total_correct += acc * len(batch)
+
+                    #update weights:
+                    
+                    #regularization loss
+                    self.weights -= learn_rate * weight_decay * self.weights
+                    
+                    #normal loss
+                    self.weights -= learn_rate * loss_fn.grad()
+
+            #eval on valid
+            for (batch, label) in iter(dl_train):
                 y_pred, class_scores = self.predict(batch)
                 loss = loss_fn(batch, label, class_scores, y_pred)
                 acc = self.evaluate_accuracy(label, y_pred)
-                (train_res, valid_res)[i].accuracy.append(acc)
-                (train_res, valid_res)[i].loss.append(loss)
-
-            #train:
-
-            #regularization loss
-            self.weights -= learn_rate * weight_decay * self.weights
-            
-            #normal loss
-            self.weights -= learn_rate * loss_fn.grad()
+                valid_res.accuracy.append(acc)
+                valid_res.loss.append(loss / len(batch))
+                average_loss += loss
+                total_correct += acc * len(batch)
             
             # ========================
             print(".", end="")
-        #average_loss = torch.average(train_res.loss)
+        
+        average_loss = average_loss / (len(dl_train.dataset) + len(dl_valid.dataset))
+        total_correct = total_correct / (len(dl_train.dataset) + len(dl_valid.dataset))
         print("")
         return train_res, valid_res
 
@@ -140,22 +154,22 @@ class LinearClassifier(object):
 
         # ====== YOUR CODE: ======
         if(has_bias):
-            w_images = self.weights[1:, :].reshape((self.weights.shape[1], *img_shape)) #Ignore row 0 == bias
+            w_images = self.weights[1:, :].T.reshape((self.weights.shape[1], *img_shape)) #Ignore row 0 == bias
         else:
-            w_images = self.weights.reshape((self.weights.shape[1], *img_shape))
+            w_images = self.weights.T.reshape((self.weights.shape[1], *img_shape))
         # ========================
 
         return w_images
 
 
 def hyperparams():
-    hp = dict(weight_std=0.0, learn_rate=0.0, weight_decay=0.0)
+    hp = dict(weight_std=0, learn_rate=0, weight_decay=0)
 
     # TODO:
     #  Manually tune the hyperparameters to get the training accuracy test
     #  to pass.
     # ====== YOUR CODE: ======
-    hp = dict(weight_std=0.03, learn_rate=0.15, weight_decay=0.009)
+    hp = dict(weight_std=0.03, learn_rate=0.03, weight_decay=0.0003) #weight_std=0.03, learn_rate=0.09, weight_decay=0.001
     #raise NotImplementedError()
     # ========================
 

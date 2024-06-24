@@ -55,9 +55,9 @@ In the case of ${\Delta} < 0$, the loss will simply be whether the results under
 
 part2_q2 = r"""
 **Your answer:**
-The weights matrix suggest that the model is learning to classify horizonal lines in different parts of the image, and when it finds lines that are indicative of a certain digit, it will strongly push towards that digit.
+The weights matrix suggest that the model is learning the shape of each digit, for example for 0 and 7 you can't clearly see the digit in the weight matrix (noisy weights). There are some digits where the digit position shifts a lot and the weights can't capture that accurately like in 2 and 5.
 
-This is could explain why it sometimes mistakes 5 vs 2 (since there are similar horizontally but flipped), and 4 vs 9.
+This is could explain why it sometimes mistakes 5 vs 2, and 4 vs 9.
 
 """
 
@@ -73,7 +73,7 @@ This graph appears to converge steadily towards zero after honing into a local m
 
 1.Slightly underfitted to the training set
 
-Because we see that after the initial spike of learning, the performance on the training set is stagnating while the performance on the validation set is increasing. This means overall good generalization but underfitting the details of the training set and thus not able to improve further.
+Because we see that after the initial spike of learning, the performance on the training set is stagnating while the performance on the validation set is increasing. This means overall good generalization but slight underfitting the details of the training set and thus not able to improve further.
 
 """
 
