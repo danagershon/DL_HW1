@@ -52,10 +52,10 @@ class SVMHingeLoss(ClassifierLoss):
 
         loss = None
         # ====== YOUR CODE: ======
-        truth_scores_column = x_scores[:, y].diag().reshape([x_scores.shape[0],1]) #[N, 1], a bit of a waste of space but its vectorized - diagonal has [i, y[i]]
+        truth_scores_column = x_scores[:, y].diag().reshape([x_scores.shape[0],1]) #On the diagonal, it has [i, y[i]]
         M = self.delta + x_scores - truth_scores_column.repeat(1, x_scores.shape[-1]) #[N, C]
 
-        loss = torch.sum(torch.maximum(M, torch.zeros(M.shape)), dim=1) - self.delta #sum on columns. Don't forget to remove delta for the column where j==y_i
+        loss = torch.sum(torch.maximum(M, torch.zeros(M.shape)), dim=1) - self.delta #Sum on columns. Remove delta for the column where j==y_i
         loss = torch.mean(loss)
         
         # ========================
@@ -63,11 +63,11 @@ class SVMHingeLoss(ClassifierLoss):
         # TODO: Save what you need for gradient calculation in self.grad_ctx
         # ====== YOUR CODE: ======
         self.grad_ctx["m"] = M
-        self.grad_ctx["y"] = y #ground truth
+        self.grad_ctx["y"] = y
         self.grad_ctx["X"] = x
         self.grad_ctx["C"] = x_scores.shape[1]
         # ========================
-        #print(loss)
+        
         return loss
 
     def grad(self):
@@ -83,17 +83,14 @@ class SVMHingeLoss(ClassifierLoss):
 
         grad = None
         # ====== YOUR CODE: ======
-        G =  (self.grad_ctx["m"] > 0).float() #calculate for j != y_i
-        G_row_penalty = -1 * torch.sum(G, dim=1).reshape([self.grad_ctx["m"].shape[0], 1]) #sum over columns as penalty
+        G = (self.grad_ctx["m"] > 0).float()
+        G_row_penalty = -1 * torch.sum(G, dim=1).reshape([self.grad_ctx["m"].shape[0], 1])
 
         G_truth_mask = torch.nn.functional.one_hot(self.grad_ctx["y"], num_classes=self.grad_ctx["C"]) #G_mask[i,j] = 1 iff y[i] = j
-        #print(G_truth_mask)
         
-        G_truth_penalty = torch.mul(G_row_penalty, G_truth_mask) #element-wise multiply
-        G += G_truth_penalty #fix G where j==y_i, by removing the extra 1 there and turning it to -1's (sum over all row)
-
-        #print(G.shape, self.grad_ctx["X"].shape)
+        G_truth_penalty = torch.mul(G_row_penalty, G_truth_mask)
+        G += G_truth_penalty #Fix G where j==y_i, by removing the extra 1 there and turning it to -1's (sum over all row)
         
-        grad = torch.matmul(self.grad_ctx["X"].T, G) * 1 / self.grad_ctx["X"].shape[0] #avg
+        grad = torch.matmul(self.grad_ctx["X"].T, G) * 1 / self.grad_ctx["X"].shape[0] #Average by N
         
         return grad

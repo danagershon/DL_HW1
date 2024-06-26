@@ -20,7 +20,6 @@ class LinearClassifier(object):
         # TODO:
         #  Create weights tensor of appropriate dimensions
         #  Initialize it from a normal dist with zero mean and the given std.
-        #weights.shape = [features, classes]
         self.weights = torch.normal(0, weight_std, size=[n_features, n_classes])
         # ========================
 
@@ -169,8 +168,7 @@ def hyperparams():
     #  Manually tune the hyperparameters to get the training accuracy test
     #  to pass.
     # ====== YOUR CODE: ======
-    hp = dict(weight_std=0.03, learn_rate=0.03, weight_decay=0.0003) #weight_std=0.03, learn_rate=0.09, weight_decay=0.001
-    #raise NotImplementedError()
+    hp = dict(weight_std=0.03, learn_rate=0.03, weight_decay=0.0003)
     # ========================
 
     return hp
