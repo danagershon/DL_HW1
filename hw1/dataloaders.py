@@ -70,7 +70,7 @@ def create_train_validation_loaders(
     #  you create.
     
     total_num_samples = len(dataset)
-    validation_size = int(validation_ratio * total_num_samples) # TODO: check how to round
+    validation_size = int(validation_ratio * total_num_samples)
 
     rand_indices = torch.randperm(total_num_samples)
 
