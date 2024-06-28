@@ -49,7 +49,7 @@ model when it is finally evaluated on the test set.
 
 part2_q1 = r"""
 **Your answer:**
-In the case of ${\Delta} < 0$, the loss will simply be whether the results undershot the margin, and the gradient will still point towards higher difference from the prediction to the label. Thus when running SGD even when ${\Delta} < 0$, the model will still lower the loss.
+The choice of ${\Delta}$ is arbitrary because if we changed ${\Delta}$ by a factor of $a$, then we could also change the weights by a factor of $a$ and change ${\lambda}$ down by a factor of $a$, which would overall make the loss equivalant.
 
 """
 
